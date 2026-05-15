@@ -1,6 +1,6 @@
 # Nutrilink-MSU-FoodSecurity-01
 
-Overview
+## Overview
 
 NutriLink is a Retrieval-Augmented Generation (RAG) proof-of-concept developed through the Mississippi Artificial Intelligence Innovation Hub in collaboration with the Mississippi Department of Human Services (MDHS). The project explores how generative AI and cloud-native services can improve access to food assistance and nutrition-related resources for Mississippi residents.
 
