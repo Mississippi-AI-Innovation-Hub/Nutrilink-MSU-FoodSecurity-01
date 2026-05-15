@@ -1,4 +1,3 @@
-cat > docs/limitations.md <<'EOF'
 # Limitations
 
 NutriLink was developed as a proof-of-concept and is not production-ready.
