@@ -26,4 +26,3 @@ NutriLink was developed as a proof-of-concept and is not production-ready.
 ## Disclaimer
 
 This repository contains code and supporting materials developed as part of a Mississippi Artificial Intelligence Innovation Hub Proof of Concept project. The contents are provided for prototype demonstration purposes. They are not production ready by default and may include simplified workflows, incomplete security guardrails, placeholder integrations, or reduced controls appropriate only for a Proof-of-Concept environment.
-EOF
