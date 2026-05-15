@@ -16,10 +16,10 @@ Traditional resource navigation methods may require users to manually search mul
 
 NutriLink was developed to explore whether a conversational AI assistant could simplify access to:
 
--Local food assistance resources
--County-specific nutritional information
--HER/SWAP-aligned nutritional guidance
--Publicly available food insecurity datasets
--Community support organizations
+- **Local food assistance resources**
+- **County-specific nutritional information**
+- **HER/SWAP-aligned nutritional guidance**
+- **Publicly available food insecurity datasets**
+- **Community support organizations**
 
 The project was designed as a proof-of-concept demonstration environment and not as a production-ready public service.
