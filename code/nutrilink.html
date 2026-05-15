@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NutriLink</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef6f0, #f8fbf8);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      width: 560px;
+      height: 760px;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #2f754f;
+      color: white;
+      padding: 26px 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 34px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .chat {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      background: #fbfdfb;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg {
+      max-width: 86%;
+      padding: 14px 17px;
+      border-radius: 18px;
+      line-height: 1.45;
+      font-size: 15.5px;
+      white-space: pre-wrap;
+    }
+
+    .bot {
+      background: #e9f5ed;
+      color: #173d29;
+      align-self: flex-start;
+      border-bottom-left-radius: 6px;
+    }
+
+    .user {
+      background: #dcecff;
+      color: #12324f;
+      align-self: flex-end;
+      border-bottom-right-radius: 6px;
+    }
+
+    .examples {
+      display: flex;
+      gap: 10px;
+      padding: 14px 20px;
+      background: #ffffff;
+      border-top: 1px solid #e5eee8;
+      overflow-x: auto;
+    }
+
+    .examples button {
+      border: 1px solid #c6dfcf;
+      background: #f2f8f4;
+      color: #2f754f;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .examples button:hover {
+      background: #e3f1e8;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 12px;
+      padding: 18px 20px;
+      background: #ffffff;
+      border-top: 1px solid #e5eee8;
+    }
+
+    input {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid #cfd8d2;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2f754f;
+      box-shadow: 0 0 0 3px rgba(47,117,79,0.12);
+    }
+
+    button.send {
+      background: #2f754f;
+      color: white;
+      border: none;
+      padding: 0 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    button.send:hover {
+      background: #255d3f;
+    }
+
+    .typing {
+      opacity: 0.75;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>🥗 NutriLink</h1>
+      <p>Hinds County nutrition security assistant</p>
+    </div>
+
+    <div class="chat" id="chat">
+      <div class="msg bot">
+Hi, I’m NutriLink. Ask me about food resources, nutrition guidance, or HER/SWAP food categories in Hinds County.
+      </div>
+    </div>
+
+    <div class="examples">
+      <button onclick="quickAsk('What programs can help low-income families get food in Hinds County?')">Food resources</button>
+      <button onclick="quickAsk('I ate chicken, rice, soda, and chips. Is this healthy?')">Classify my meal</button>
+      <button onclick="quickAsk('What is HER/SWAP guidance?')">HER/SWAP</button>
+    </div>
+
+    <div class="input-area">
+      <input id="question" placeholder="Type your question..." onkeydown="if(event.key==='Enter') sendMessage()">
+      <button class="send" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://j4y1pra7nd.execute-api.us-east-1.amazonaws.com/prod/chat";
+
+    function addMessage(text, sender, typing=false) {
+      const chat = document.getElementById("chat");
+      const div = document.createElement("div");
+      div.className = "msg " + sender + (typing ? " typing" : "");
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    function quickAsk(text) {
+      document.getElementById("question").value = text;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("question");
+      const question = input.value.trim();
+      if (!question) return;
+
+      addMessage(question, "user");
+      input.value = "";
+
+      const thinking = addMessage("Thinking...", "bot", true);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const raw = await response.json();
+        const data = raw.body ? JSON.parse(raw.body) : raw;
+
+        thinking.remove();
+
+        addMessage(
+          data.answer || data.response || data.error || JSON.stringify(data, null, 2),
+          "bot"
+        );
+      } catch (error) {
+        thinking.remove();
+        addMessage("Error connecting to NutriLink API. Check API Gateway, Lambda, and CORS settings.", "bot");
+      }
+    }
+  </script>
+</body>
+</html>
