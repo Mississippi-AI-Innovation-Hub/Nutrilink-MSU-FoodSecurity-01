@@ -1,4 +1,3 @@
-cat > docs/architecture.md <<'EOF'
 # Architecture Overview
 
 NutriLink is a Retrieval-Augmented Generation (RAG) proof-of-concept focusing on Hinds County food assistance and nutrition resource support for the Mississippi Department of Human Services (MDHS).
